@@ -1,0 +1,111 @@
+syntax = "proto3";
+package v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/zuramai/proto/v1";
+
+message ToDo {
+    int64 id = 1;
+    string title = 2;
+    string description = 3;
+
+    // date and time to remind the todo task
+    google.protobuf.Timestamp reminder = 4;
+}
+
+// Request data to create todo task
+message CreateRequest {
+    // API versioning
+    string api = 1;
+
+    // task entity to add
+    ToDo toDo = 2;
+}
+
+// Response that contains data for created todo
+message CreateResponse{
+    // API Versioning
+    string api = 1;
+
+    // id of created task
+    int64 id = 2;
+}
+
+
+message ReadRequest {
+    string api = 1;
+    
+    int64 id = 2;
+}
+
+// Contains todo task data specified in by ID request
+message ReadResponse {
+    string api = 1;
+
+    // task entity read by id
+    ToDo toDo = 2;
+}
+
+// Request data to update todo task
+message UpdateRequest {
+    string api = 1;
+
+    // Task entity to update 
+    ToDo toDo = 2;
+}
+
+// Contains status of update operation
+message UpdateResponse{
+    string api = 1;
+
+    // Contains number of entities have been updated
+    // Equals 1 in case of successful update
+    int64 updated = 2;
+}
+
+// Request data to delete todo task
+message DeleteRequest{
+    string api = 1;
+
+    // Unique integer identifier of the todo task to delete
+    int64 id = 2;
+}
+
+// Contains status of delete operation
+message DeleteResponse {
+    string api = 1;
+
+    int64 deleted = 2;
+}
+
+// Request data to read all todo task
+message ReadAllRequest{
+    string api = 1;
+}
+
+// Contains list of all todo tasks
+message ReadAllResponse {
+    string api = 1;
+
+    // List of all todo tasks
+    repeated ToDo todos = 2;
+}
+
+// Service to manage list of todo tasks
+service ToDoService {
+    // Create new todo task
+    rpc Create(CreateRequest) returns (CreateResponse);
+
+    // Read todo task
+    rpc Read(ReadRequest) returns (ReadResponse);
+
+    // Update todo tasks
+    rpc Update(UpdateRequest) returns (UpdateResponse);
+
+    // Delete todo tasks
+    rpc Delete(DeleteRequest) returns (DeleteResponse);
+
+    // Read all todo tasks
+    rpc ReadAll(ReadAllRequest) returns (ReadAllResponse);
+}
